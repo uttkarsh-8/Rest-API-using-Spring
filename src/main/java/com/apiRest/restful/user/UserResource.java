@@ -1,5 +1,6 @@
 package com.apiRest.restful.user;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class UserResource {
 
     //POST/ USERs
     @PostMapping("/users")
-    public ResponseEntity<Object> createUser(@RequestBody User user){
+    public ResponseEntity<Object> createUser(@Valid @RequestBody User user){
         User savedUser = service.save(user);
         // location - /users/4
         // we are creating a specific URI or a specific link to view your new user's profile.
@@ -51,5 +52,10 @@ public class UserResource {
         //toUri - converts it to URI
 
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/users/{id}")
+    public void user(@PathVariable int id){
+        service.deleteByid(id);
     }
 }

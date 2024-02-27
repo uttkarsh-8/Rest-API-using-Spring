@@ -38,4 +38,10 @@ public class UserDaoService {
         return users.stream().filter(predicate).findFirst().orElse(null); // if the user is not found, return null instead of an empty object
     }
 
+    // deleting a user
+    public void deleteByid(int id){
+        Predicate<? super User> predicate = user -> user.getId() == id;
+        users.removeIf(predicate);
+    }
+
 }
