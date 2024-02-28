@@ -2,6 +2,8 @@ package com.apiRest.restful.user;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,15 +22,28 @@ public class UserResource {
         return service.findAll();
     }
 
+    // going to implement Hateos
+    //http://localhost:8080/users
+
+    // 2 things we have to use for Heateos is EntityModel and WebMvcLinkBuilder
+    // we are wrapping the User in EntityModel
     @GetMapping("/users/{id}")
-    public User retrieveUsers(@PathVariable int id){
+    public EntityModel<User> retrieveUsers(@PathVariable int id){
 
         User user = service.findOne(id);
 
         if (user==null){
             throw new UserNotFoundException("id: "+ id);
         }
-        return user;
+
+        EntityModel<User> entityModel = EntityModel.of(user);
+
+        WebMvcLinkBuilder link = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrieveAllUsers());
+
+        entityModel.add(link.withRel("all-user"));
+
+        return entityModel;
     }
 
     //POST/ USERs
